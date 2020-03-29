@@ -1,5 +1,19 @@
 import numpy as np
-import os
+
+
+# distance de hamming peut être utiliser seulement si les pages web sont de meme longueurs. Si il y a un décalage de 1 cela fausse le calcule
+# Preferer levenshtein à hamming !
+"""
+def dist_hamming(m1,m2):
+    d = 0
+    for a,b in zip(m1,m2):              # pour chaque couple
+        if a != b :                     # on test si c'est égale
+            d += 1
+    return d
+
+#print(dist_hamming("close", "cloue"))
+"""
+
 
 #algo levenshtein
 def levenshtein(seq1, seq2):
@@ -27,32 +41,3 @@ def levenshtein(seq1, seq2):
                 )
     print (matrix)
     return (matrix[size_x - 1, size_y - 1])
-
-#levenshtein("niche","chien");             # test avec mots niche et chien
-
-# distance de hamming peut être utiliser  seulement si les pages web sont de meme longueurs. Si il y a un décalage de 1 cela fausse le calcule
-# Preferer levenshtein à hamming !
-"""
-def dist_hamming(m1,m2):
-    d = 0
-    for a,b in zip(m1,m2):              # pour chaque couple
-        if a != b :                     # on test si c'est égale
-            d += 1
-    return d
-
-#print(dist_hamming("close", "cloue"))
-"""
-
-
-
-page = []       #stock des noms des pages web de l'archive
-for root, directories, files in os.walk("/COURS/M1/algotxt/pages_web/"):    # pour chaque fichier dans le chemin suivant
-    for file in files:
-        page.append(file)   # on ajoute à la liste
-
-
-"""
-levenshtein(page[0],page[5000])
-print(page[0])
-print(page[5000])
-"""
