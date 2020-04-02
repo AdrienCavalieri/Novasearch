@@ -40,6 +40,12 @@ class Index_inverse():
         bar.finish()
         self._urlsLoad = len(pages)
         self._pages = pages
+
+        taillesMotsPages = [len(page.get_mots()) for page in self._pages]
+        if len(taillesMotsPages) == 0:
+            self._avgNbMots = 0
+        else:
+            self._avgNbMots = (float(sum(taillesMotsPages))) / len(taillesMotsPages)
         self._indexInverse = dict()
         self.loadIndex()
 
@@ -76,15 +82,45 @@ class Index_inverse():
         for page in self._pages:
             if page.get_nom() == namePage:
                 #print(page)
-                return page.getScoreMot(mot)/page.getTotalScore()
+                try:
+                    return page.getScoreMot(mot) / page.getTotalScore()
+                except:
+                    return 0
         return 0
 
-    def idf(self,mot):
+    def idf(self, mot):
         if mot not in self._indexInverse:
             return 0
         else:
-            #print(self._indexInverse[mot])
-            return math.log(len(self._pages)/len(self._indexInverse[mot]))
+            # print(self._indexInverse[mot])
+            return math.log(len(self._pages) / len(self._indexInverse[mot]))
 
-    def tf_idf(self,mot,namePage):
-        return self.tf(mot,namePage)*self.idf(mot)
+    def tf_idf(self, mot, namePage):
+        return self.tf(mot, namePage) * self.idf(mot)
+
+    def bm25(self, listMots, namePage):
+        total = 0
+        k = 2.0
+        b = 0.75
+        for mot in listMots:
+            idf = self.idf(mot)
+            dividende = self.tf_idf(mot, namePage) * (k + 1)
+            diviseur = self.tf_idf(mot, namePage) + k * (1 - b + b * self._urlsLoad / self._avgNbMots)
+            score = idf * (dividende / diviseur)
+            #print("pour " + mot + ": " + str(idf) + " * (" + str(dividende) + " / " + str(diviseur) + ") = "+str(score))
+            total += score
+        return total
+
+    def recherche(self,chaine):
+        mots = chaine.split()
+        mots = [mot.lower() for mot in mots]
+        table = str.maketrans('', '', string.punctuation)
+        mots = [mot.translate(table) for mot in mots]
+
+        listScore = dict()
+        for page in self._pages:
+            listScore[page.get_nom()] = self.bm25(mots,page.get_nom())
+        listScore = {k: v for k, v in sorted(listScore.items(), key=lambda item: item[1], reverse=True)[:10]}
+
+        return listScore
+
