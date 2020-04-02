@@ -1,9 +1,12 @@
 import numpy as np
 
 
-# distance de hamming peut être utiliser seulement si les pages web sont de meme longueurs. Si il y a un décalage de 1 cela fausse le calcule
-# Preferer levenshtein à hamming !
-"""
+# distance de hamming peut être utiliser seulement si les pages web sont de même longueurs.
+# Si une page est plus grande que l'autre le calcul s'arrête quand il n'y a plus 2 valeurs à comparer
+# S'il y a un décalage de 1 cela fausse le calcul
+# Preferer hamming à leveinshtein car la compléxité est beaucoup plus petite.
+# Même si hamming à beaucoup de contraintes, pour savoir si 2 pages sont identiques cela est suffisant.
+
 def dist_hamming(m1,m2):
     d = 0
     for a,b in zip(m1,m2):              # pour chaque couple
@@ -12,8 +15,6 @@ def dist_hamming(m1,m2):
     return d
 
 #print(dist_hamming("close", "cloue"))
-"""
-
 
 #algo levenshtein
 def levenshtein(seq1, seq2):
@@ -39,5 +40,5 @@ def levenshtein(seq1, seq2):
                     matrix[x-1,y-1] + 1,
                     matrix[x,y-1] + 1
                 )
-    print (matrix)
+    #print (matrix)
     return (matrix[size_x - 1, size_y - 1])

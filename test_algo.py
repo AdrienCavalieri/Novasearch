@@ -1,19 +1,45 @@
 import os
-from distance_page import levenshtein
+import time
+from bs4 import BeautifulSoup, NavigableString
+from distance_page import *
 
+"""
 print('Algo avec niche et chien')
 var = levenshtein("niche","chien")             # test algo avec mots niche et chien
 print('La distance est de :' + str(var))
+"""
 
-page = []       #stock des noms des pages web de l'archive
-for root, directories, files in os.walk("./pages_web"):    #charge les fichiers de l'archive
-    for file in files:
-        page.append(file)   # on ajoute à la liste
+
+dirpath = "./same_page"
+dir = os.listdir(dirpath)
+i=0
+page = []
+for file in dir:
+    try:
+        filePath = dirpath+ '/' + file
+        file = open(filePath, 'r', encoding="utf8")
+        soup = BeautifulSoup(file, "html.parser")  # lib pour parser une page html
+        text = soup.get_text()  # recupere uniquement le texte
+        text = ''.join(text.split()) # recupere les mots du texte tout attaché
+        page.append(text)
+    except:
+        i = i + 1  # nb de fichiers ignoré
 
 print('Algo avec 2 pages de l\'archive')
 page1 = page[0]
-page2 = page[5000]
+page2 = page[2]
+print('Test hamming')
+start = time.time()
+var = dist_hamming(page1,page2)
+end = time.time()
+print(end - start)
+print('La distance est de : ' + str(var))
+
+print('Test leveinshtein')
+start = time.time()
 var = levenshtein(page1,page2)
+end = time.time()
+print(end - start)
 print('La distance est de : ' + str(var))
 print('La page 1 est : ' + page1)
 print('La page 2 est : ' + page2)
