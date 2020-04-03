@@ -116,11 +116,15 @@ class Index_inverse():
         mots = [mot.lower() for mot in mots]
         table = str.maketrans('', '', string.punctuation)
         mots = [mot.translate(table) for mot in mots]
+        print('lancement de la recherche')
 
         listScore = dict()
+        bar = Bar('Chargement des score de page', max=len(self._pages), suffix='%(percent).1f%% - %(eta)ds')
         for page in self._pages:
             listScore[page.get_nom()] = self.bm25(mots,page.get_nom())
+            bar.next()
+        bar.finish()
         listScore = {k: v for k, v in sorted(listScore.items(), key=lambda item: item[1], reverse=True)[:10]}
-
+        print('fin de la recherche')
         return listScore
 
