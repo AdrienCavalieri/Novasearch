@@ -1,6 +1,6 @@
 import os
 import time
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 from distance_page import *
 
 """
