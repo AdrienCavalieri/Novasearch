@@ -2,7 +2,6 @@ import os
 from bs4 import BeautifulSoup
 from progress.bar import Bar
 from distance_page import dist_hamming
-import shutil
 
 dirpath = "./same_page"
 dir = os.listdir(dirpath)
@@ -32,7 +31,6 @@ def page_similaire():
     for i in range(len(page)):
         if page[i][1]:
             j = i + 1
-            # page_valide.append(page[i][2])
             list_lier[page[i][2]] = list()      # on met les liens valides dans le dictionnaire
             for k in range(j, len(page)):
                 if (page[k][1]):
@@ -42,22 +40,8 @@ def page_similaire():
                         list_lier[page[i][2]].append(page[k][2])            # on l'ajoute en valeur de la clé
 
         bar.next()
-    return list_lier
+    return list_lier.keys()         # renvoie que les liens valide, c'est-à-dire les clés
     bar.finish()
-
-
-"""
-On met uniquement les clés dans un nouveau dossier. Cela constituera l'index.
-"""
-index = page_similaire().keys()
-dir_dest = "./index_pages"
-os.makedirs(dir_dest, exist_ok=True)
-bar = Bar('Création de l\'index: ', max=len(page), suffix='%(percent).1f%% - %(eta)ds')
-for file in index:
-    filePath = dirpath + "/" + file
-    shutil.copy(filePath, dir_dest+ "/" +file)
-    bar.next()
-bar.finish()
 
 #page_valide = list_lier.keys()
 #print(page_valide)
