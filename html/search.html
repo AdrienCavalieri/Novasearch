@@ -2,13 +2,14 @@
 <html lang="fr">
 	<head>
 		<meta charset="UTF-8">
-		<title>Novasearch - Recherche</title>
+		<title>Novasearch - Accueil</title>
 		<!-- Lien Boostrap CDN (CSS minimal) -->
-		<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<link href="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 		<!-- API Google Font (pour la police Roboto) -->
 		<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900' rel='stylesheet' type='text/css'>
 		<!-- CSS additionnel -->
-		<link rel = "stylesheet" type = "text/css" href = "common.css" />
+		<link rel="stylesheet" type="text/css" href="common.css"/>
+	</head>
 	<body>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
@@ -20,10 +21,10 @@
 		<div class="container">
 			<div class="row justify-content-center align-self-center">
 				<div class="col-12 col-md-10 col-lg-8">
-					<form class="card card-sm">
+					<form class="card card-sm" enctype="multipart/form-data" action="search" method="post">
 						<div class="card-body row no-gutters align-items-center">
 							<div class="col">
-								<input class="form-control form-control-lg form-control-borderless" type="search" placeholder="Rechercher ...">
+								<input class="form-control form-control-lg form-control-borderless" type="search" name="reverse_index_search" placeholder="Rechercher ...">
 							</div>
 						</div>
 					</form>
