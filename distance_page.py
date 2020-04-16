@@ -16,7 +16,6 @@ def dist_hamming(m1, m2, max):
             return d
     return d
 
-
 # print(dist_hamming("close", "cloue"))
 
 # algo levenshtein
