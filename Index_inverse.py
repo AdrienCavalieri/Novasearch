@@ -147,9 +147,9 @@ class Index_inverse():
             for list in listMots:
                 if(list in tmp):
                     pass
-                elif (len(mot) < 2):
+                elif (len(mot) < 3):
                     if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
-                        if (levenshtein(mot, list, )==0):
+                        if(dist_hamming(mot,list,len(mot))==0):
                             mots.append(list)
                 elif(len(mot)<6):
                     if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
@@ -161,6 +161,7 @@ class Index_inverse():
                             mots.append(list)
             bar.next()
         bar.finish()
+        print(mots)
         return mots
 
 
