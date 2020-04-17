@@ -142,18 +142,25 @@ class Index_inverse():
         for mot in mots:
             tmp.append(mot)
         listMots = self.getmots();
+        bar = Bar('Recherche mots similaires', max=len(tmp), suffix='%(percent).1f%% - %(eta)ds')
         for mot in tmp:
             for list in listMots:
                 if(list in tmp):
                     pass
+                elif (len(mot) < 2):
+                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
+                        if (levenshtein(mot, list, )==0):
+                            mots.append(list)
                 elif(len(mot)<6):
                     if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
-                        if(dist_hamming(mot,list,len(mot))==0):
+                        if(levenshtein(mot,list,)<2):
                             mots.append(list)
                 else:
                     if( (len(list)>=len(mot)-1) and (len(list)<=len(mot)+1) ):
-                        if(dist_hamming(mot,list,len(mot))<3):
+                        if(levenshtein(mot,list)<3):
                             mots.append(list)
+            bar.next()
+        bar.finish()
         return mots
 
 
