@@ -143,25 +143,25 @@ class Index_inverse():
             tmp.append(mot)
         listMots = self.getmots();
         bar = Bar('Recherche mots similaires', max=len(tmp), suffix='%(percent).1f%% - %(eta)ds')
-        for mot in tmp:
-            for list in listMots:
-                if(list in tmp):
+        for mot in tmp:             # pour les mots rechercher
+            for list in listMots:   # les mots de la liste
+                if(list in tmp):    # si le mot est deja dans la liste on le saute
                     pass
-                elif (len(mot) < 3):
-                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
-                        if(dist_hamming(mot,list,len(mot))==0):
+                elif (len(mot) < 3):                                                        # mot entre 0 et 2 lettres
+                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):       # entre n-1 n+1
+                        if(dist_hamming(mot,list,len(mot))==0):                             # hamming == 0 (sans erreur car c'est plus rapide que levenshtein)
                             mots.append(list)
-                elif(len(mot)<6):
+                elif(len(mot)<6):                                                           # mot entre 3 et 5 lettres
                     if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
-                        if(levenshtein(mot,list,)<2):
+                        if(levenshtein(mot,list,)<2):                                       # levenshtein 1 erreur max
                             mots.append(list)
-                else:
+                else:                                                                       # > 6 lettres
                     if( (len(list)>=len(mot)-1) and (len(list)<=len(mot)+1) ):
-                        if(levenshtein(mot,list)<3):
+                        if(levenshtein(mot,list)<3):                                        # levenshtein 2 erreurs max
                             mots.append(list)
             bar.next()
         bar.finish()
-        print(mots)
+        #print(mots)
         return mots
 
 
