@@ -4,12 +4,16 @@ import string
 from bs4 import BeautifulSoup
 from Page import Page
 from progress.bar import Bar
+from tri_page import tri_page
+from distance_page import *
+import time
 
 
 class Index_inverse():
 
     def __init__(self, dirPath):
-        dir = os.listdir(dirPath)  # liste tous les fichiers d'un répertoire
+        tpage = tri_page(dirPath)
+        dir = tpage.page_similaire()    # on enleve les pages similaires de l'index
         pages = list()
         i = 0
         j = 0
@@ -116,7 +120,9 @@ class Index_inverse():
         mots = [mot.lower() for mot in mots]
         table = str.maketrans('', '', string.punctuation)
         mots = [mot.translate(table) for mot in mots]
+        mots = self.motsimilaire(mots)
         print('lancement de la recherche')
+
 
         listScore = dict()
         bar = Bar('Chargement des score de page', max=len(self._pages), suffix='%(percent).1f%% - %(eta)ds')
@@ -127,4 +133,35 @@ class Index_inverse():
         listScore = {k: v for k, v in sorted(listScore.items(), key=lambda item: item[1], reverse=True)[:10]}
         print('fin de la recherche')
         return listScore
+
+    def getmots(self):
+        return self._indexInverse.keys()
+
+    def motsimilaire(self,mots):
+        tmp = []
+        for mot in mots:
+            tmp.append(mot)
+        listMots = self.getmots();
+        bar = Bar('Recherche mots similaires', max=len(tmp), suffix='%(percent).1f%% - %(eta)ds')
+        for mot in tmp:
+            for list in listMots:
+                if(list in tmp):
+                    pass
+                elif (len(mot) < 3):
+                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
+                        if(dist_hamming(mot,list,len(mot))==0):
+                            mots.append(list)
+                elif(len(mot)<6):
+                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
+                        if(levenshtein(mot,list,)<2):
+                            mots.append(list)
+                else:
+                    if( (len(list)>=len(mot)-1) and (len(list)<=len(mot)+1) ):
+                        if(levenshtein(mot,list)<3):
+                            mots.append(list)
+            bar.next()
+        bar.finish()
+        print(mots)
+        return mots
+
 
