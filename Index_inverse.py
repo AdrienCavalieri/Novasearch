@@ -12,8 +12,9 @@ import time
 class Index_inverse():
 
     def __init__(self, dirPath):
-        tpage = tri_page(dirPath)
-        dir = tpage.page_similaire()    # on enleve les pages similaires de l'index
+        #tpage = tri_page(dirPath)
+        #dir = tpage.page_similaire()    # on enleve les pages similaires de l'index
+        dir = os.listdir(dirPath)
         pages = list()
         i = 0
         j = 0
@@ -87,7 +88,7 @@ class Index_inverse():
             if page.get_nom() == namePage:
                 #print(page)
                 try:
-                    return page.getScoreMot(mot) / page.getTotalScore()
+                    return page.getScoreMot(mot) / page.get_totalScore()
                 except:
                     return 0
         return 0
@@ -102,14 +103,14 @@ class Index_inverse():
     def tf_idf(self, mot, namePage):
         return self.tf(mot, namePage) * self.idf(mot)
 
-    def bm25(self, listMots, namePage):
+    def bm25(self, listMots, namePage, taillePage):
         total = 0
         k = 2.0
         b = 0.75
         for mot in listMots:
             idf = self.idf(mot)
             dividende = self.tf_idf(mot, namePage) * (k + 1)
-            diviseur = self.tf_idf(mot, namePage) + k * (1 - b + b * self._urlsLoad / self._avgNbMots)
+            diviseur = self.tf_idf(mot, namePage) + k * (1 - b + b * taillePage/ self._avgNbMots)
             score = idf * (dividende / diviseur)
             #print("pour " + mot + ": " + str(idf) + " * (" + str(dividende) + " / " + str(diviseur) + ") = "+str(score))
             total += score
@@ -120,14 +121,14 @@ class Index_inverse():
         mots = [mot.lower() for mot in mots]
         table = str.maketrans('', '', string.punctuation)
         mots = [mot.translate(table) for mot in mots]
-        mots = self.motsimilaire(mots)
+        #mots = self.motsimilaire(mots)
         print('lancement de la recherche')
 
 
         listScore = dict()
         bar = Bar('Chargement des score de page', max=len(self._pages), suffix='%(percent).1f%% - %(eta)ds')
         for page in self._pages:
-            listScore[page.get_nom()] = self.bm25(mots,page.get_nom())
+            listScore[page.get_nom()] = self.bm25(mots,page.get_nom(),page.get_taille())
             bar.next()
         bar.finish()
         listScore = {k: v for k, v in sorted(listScore.items(), key=lambda item: item[1], reverse=True)[:10]}
