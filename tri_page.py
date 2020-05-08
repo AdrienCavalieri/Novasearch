@@ -38,11 +38,11 @@ class tri_page():
                 for k in range(j, len(self.page)):
                     if (self.page[k][1]):
                         # print(i, k)
-                        if (dist_hamming(self.page[i][2], self.page[k][2], 10) < 10 and dist_hamming(self.page[i][0], self.page[k][0], 100) < 100):  # si la distance entre 2 pages est similaire (10=5k pages, 100=3k pages 1000=700 pages)
+                        if (dist_hamming(self.page[i][0], self.page[k][0], 100) < 100):  # si la distance entre 2 pages est similaire (4-5 caractères = 1 mot en moyenne, 10=5k pages, 100=3k pages, 1000=700 pages) on peut également tester 2 urls
                             self.page[k] = (self.page[k][0], False, self.page[k][2])  # on la retire des comparaisons futur
                             list_lier[self.page[i][2]].append(self.page[k][2])  # on l'ajoute en valeur de la clé
 
             bar.next()
         bar.finish()
-        print(len(list_lier.keys()))
+        #print(len(list_lier.keys()))
         return list_lier.keys()  # renvoie que les liens valide, c'est-à-dire les clés
