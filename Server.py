@@ -2,7 +2,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import cgi
 from Index_inverse import Index_inverse
 
-index = Index_inverse("./pages_web2") # On déclare l'index rempli en tant que variable globale.
+index = Index_inverse("../pages_web") # On déclare l'index rempli en tant que variable globale.
 index.printIndex() # Génère un fichier log.
 
 class Server(BaseHTTPRequestHandler):
