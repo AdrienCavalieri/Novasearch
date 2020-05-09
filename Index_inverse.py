@@ -52,6 +52,7 @@ class Index_inverse():
             self._avgNbMots = float(sum(taillesMotsPages) / len(taillesMotsPages))
         self._indexInverse = dict()
         self.loadIndex()
+        self._dict_mots = self.dict_mots()
 
         self._bm25solo = dict()
         self.setbm25solo()
@@ -148,33 +149,43 @@ class Index_inverse():
         print(listScore)
         return listScore
 
-    def getmots(self):
-        return self._indexInverse.keys()
+    # on découpe la liste de mots en plusieurs clé valeurs pour faire des recherches plus courtes.
+    def dict_mots(self):
+        listMots = self._indexInverse.keys()
+        dictMots = {'0':[], '1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], 'a':[], 'b':[], 'c':[], 'd':[], 'e':[], 'f':[], 'g':[], 'h':[], 'i':[], 'j':[], 'k':[], 'l':[], 'm':[], 'n':[], 'o':[], 'p':[], 'q':[], 'r':[], 's':[], 't':[], 'u':[], 'v':[], 'w':[], 'x':[], 'y':[], 'z':[]}
+        for mot in listMots:
+            if(mot ==''):
+                continue
+            if (mot[0] in dictMots):
+                dictMots[mot[0]].append(mot)
+        return dictMots
 
-    def motsimilaire(self, mots):
+
+    def motsimilaire(self,mots):
         tmp = []
         for mot in mots:
             tmp.append(mot)
-        listMots = self.getmots();
+        listMots = self._dict_mots
         bar = Bar('Recherche mots similaires', max=len(tmp), suffix='%(percent).1f%% - %(eta)ds')
-        for mot in tmp:  # pour les mots rechercher
-            if (mot in listMots):
+        for mot in tmp:             # pour les mots rechercher
+            if(mot ==''):           # evite les caractères spéciaux
                 continue
-            for list in listMots:  # les mots de la liste
-                if (list in tmp):  # si le mot est deja dans la liste on le saute
+            if(mot in listMots[mot[0]]):    # si le mot est dans l'index on ne cherche pas d'autres mots similaire
+                continue
+            for list in listMots[mot[0]]:   # les mots de la liste
+                if(list in tmp):    # si le mot est deja dans la liste on le saute
                     pass
-                elif (len(mot) < 3):  # mot entre 0 et 2 lettres
-                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):  # entre n-1 n+1
-                        if (dist_hamming(mot, list, len(
-                                mot)) == 0):  # hamming == 0 (sans erreur car c'est plus rapide que levenshtein)
+                elif (len(mot) < 3):                                                        # mot entre 0 et 2 lettres
+                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):       # entre n-1 n+1
+                        if(dist_hamming(mot,list,len(mot))==0):                             # hamming(+ rapide) sans erreur
                             mots.append(list)
-                elif (len(mot) < 6):  # mot entre 3 et 5 lettres
+                elif(len(mot)<6):                                                           # mot entre 3 et 5 lettres
                     if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
-                        if (levenshtein(mot, list, ) < 2):  # levenshtein 1 erreur max
+                        if(levenshtein(mot,list,)<2):                                       # levenshtein 1 erreur max
                             mots.append(list)
-                else:  # > 6 lettres
-                    if ((len(list) >= len(mot) - 1) and (len(list) <= len(mot) + 1)):
-                        if (levenshtein(mot, list) < 3):  # levenshtein 2 erreurs max
+                else:                                                                       # > 6 lettres
+                    if( (len(list)>=len(mot)-1) and (len(list)<=len(mot)+1) ):
+                        if(levenshtein(mot,list)<3):                                        # levenshtein 2 erreurs max
                             mots.append(list)
             bar.next()
         bar.finish()
