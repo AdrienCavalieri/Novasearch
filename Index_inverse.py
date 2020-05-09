@@ -6,7 +6,6 @@ from Page import Page
 from progress.bar import Bar
 from tri_page import tri_page
 from distance_page import *
-import time
 
 
 class Index_inverse():
