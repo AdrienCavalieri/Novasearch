@@ -13,7 +13,7 @@ class Index_inverse():
 
     def __init__(self, dirPath):
         tpage = tri_page(dirPath)
-        dir = tpage.page_similaire()    # on enleve les pages similaires de l'index
+        dir = tpage.page_similaire()  # on enleve les pages similaires de l'index
         pages = list()
         i = 0
         j = 0
@@ -49,10 +49,30 @@ class Index_inverse():
         if len(taillesMotsPages) == 0:
             self._avgNbMots = 0
         else:
-            self._avgNbMots = (float(sum(taillesMotsPages))) / len(taillesMotsPages)
+            self._avgNbMots = float(sum(taillesMotsPages) / len(taillesMotsPages))
         self._indexInverse = dict()
         self.loadIndex()
         self._dict_mots = self.dict_mots()
+
+        self._bm25solo = dict()
+        self.setbm25solo()
+
+    def setbm25solo(self):
+        k = 2.0
+        b = 0.75
+        bar = Bar('Chargement des bm25solo', max=len(self._pages),
+                  suffix='%(percent).1f%% - %(eta)ds')
+        for page in self._pages:
+            self._bm25solo[page.get_nom()] = dict()
+            for mot in page.get_mots():
+                if mot not in self._bm25solo[page.get_nom()]:
+                    idf = self.idf(mot)
+                    dividende = self.tf_idf(mot, page.get_nom()) * (k + 1)
+                    diviseur = self.tf_idf(mot, page.get_nom()) + k * (1 - b + b * len(page.get_mots()) / self._avgNbMots)
+                    score = idf * (dividende / diviseur)
+                    self._bm25solo[page.get_nom()][mot] = score
+            bar.next()
+        bar.finish()
 
     def loadIndex(self):  # on rempli l'index inversé par rapport au page chargée
         i = 0
@@ -86,7 +106,7 @@ class Index_inverse():
     def tf(self, mot, namePage):
         for page in self._pages:
             if page.get_nom() == namePage:
-                #print(page)
+                # print(page)
                 try:
                     return page.getScoreMot(mot) / page.getTotalScore()
                 except:
@@ -103,20 +123,14 @@ class Index_inverse():
     def tf_idf(self, mot, namePage):
         return self.tf(mot, namePage) * self.idf(mot)
 
-    def bm25(self, listMots, namePage):
+    def bm25(self, listMots, listbm25):
         total = 0
-        k = 2.0
-        b = 0.75
         for mot in listMots:
-            idf = self.idf(mot)
-            dividende = self.tf_idf(mot, namePage) * (k + 1)
-            diviseur = self.tf_idf(mot, namePage) + k * (1 - b + b * self._urlsLoad / self._avgNbMots)
-            score = idf * (dividende / diviseur)
-            #print("pour " + mot + ": " + str(idf) + " * (" + str(dividende) + " / " + str(diviseur) + ") = "+str(score))
-            total += score
+            if mot in listbm25 :
+                total += listbm25[mot]
         return total
 
-    def recherche(self,chaine):
+    def recherche(self, chaine):
         mots = chaine.split()
         mots = [mot.lower() for mot in mots]
         table = str.maketrans('', '', string.punctuation)
@@ -124,15 +138,15 @@ class Index_inverse():
         mots = self.motsimilaire(mots)
         print('lancement de la recherche')
 
-
         listScore = dict()
         bar = Bar('Chargement des score de page', max=len(self._pages), suffix='%(percent).1f%% - %(eta)ds')
         for page in self._pages:
-            listScore[page.get_nom()] = self.bm25(mots,page.get_nom())
+            listScore[page.get_nom()] = self.bm25(mots, self._bm25solo[page.get_nom()])
             bar.next()
         bar.finish()
         listScore = {k: v for k, v in sorted(listScore.items(), key=lambda item: item[1], reverse=True)[:10]}
         print('fin de la recherche')
+        print(listScore)
         return listScore
 
     # on découpe la liste de mots en plusieurs clé valeurs pour faire des recherches plus courtes.
@@ -175,5 +189,5 @@ class Index_inverse():
                             mots.append(list)
             bar.next()
         bar.finish()
-        #print(mots)
+        print(mots)
         return mots
