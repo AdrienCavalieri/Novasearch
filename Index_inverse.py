@@ -151,12 +151,14 @@ class Index_inverse():
     # on découpe la liste de mots en plusieurs clé valeurs pour faire des recherches plus courtes.
     def dict_mots(self):
         listMots = self._indexInverse.keys()
-        dictMots = {'0':[], '1':[], '2':[], '3':[], '4':[], '5':[], '6':[], '7':[], '8':[], '9':[], 'a':[], 'b':[], 'c':[], 'd':[], 'e':[], 'f':[], 'g':[], 'h':[], 'i':[], 'j':[], 'k':[], 'l':[], 'm':[], 'n':[], 'o':[], 'p':[], 'q':[], 'r':[], 's':[], 't':[], 'u':[], 'v':[], 'w':[], 'x':[], 'y':[], 'z':[]}
+        dictMots = {}
         for mot in listMots:
             if(mot ==''):
                 continue
-            if (mot[0] in dictMots):
-                dictMots[mot[0]].append(mot)
+            try:
+                dictMots[mot[0]].append(mot)        # Si la clé existe on ajoute le mot en valeur
+            except KeyError:
+                dictMots[mot[0]] = [mot]            # Sinon on créer la clé valeur
         return dictMots
 
 
