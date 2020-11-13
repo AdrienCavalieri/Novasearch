@@ -1,4 +1,4 @@
-# Projet d'algorithmique du texte
+# Novasearch
 
 ## Dépendances
 
@@ -20,4 +20,4 @@ Notre projet utilise différents modules Python qui devront peut-être être ins
 
 ## Crédits
 
-Projet réalisé par Antony Fourchault, Sébastien Wu et Adrien Cavalieri.
+Projet réalisé par [Antony Fourchault](https://github.com/shitori), [Sébastien Wu](https://github.com/Nonow) et [Adrien Cavalieri](https://github.com/AdrienCavalieri).
