@@ -12,7 +12,7 @@ Notre projet utilise différents modules Python qui devront peut-être être ins
 ## Utilisation sous GNU/Linux
 
 1. Cloner le dépôt.
-2. Télécharger l'archive "pages_web.tgz".
+2. Télécharger l'archive « [pages_web.tgz](https://lipn.univ-paris13.fr/~david/doc/pages_web.tgz) ».
 3. Décompresser l'archive dans le répertoire où a été cloné le dépôt.
 4. Ouvrir un terminal toujours dans ce même répertoire.
 5. Démarrer le serveur avec la commande `python Server.py`.
